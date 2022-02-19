@@ -22,7 +22,7 @@ For more options and their explanations check ``train.py``.
 
 ### Infer
 
-You can supply a model checkpoint, a context paragraph as a .txt file and a question whose answer appears in the context:
+You can supply a model checkpoint, a context paragraph as a .txt file, and a question whose answer appears in the context:
 
 ```shell
 python infer.py --checkpoint "checkpoints/epoch_54.loss_1.8427.val_loss_13.9464" --context_txt "example/context.txt" --question "The majority of building construction jobs are what?"
