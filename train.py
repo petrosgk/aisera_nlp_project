@@ -26,7 +26,7 @@ def parse_args():
                       help='Learning rate.')
   parser.add_argument('--batch_size', type=int, default=32,
                       help='Batch size.')
-  parser.add_argument('--max_epochs', type=int, default=100,
+  parser.add_argument('--max_epochs', type=int, default=50,
                       help='Max number of epochs to train for.')
   parser.add_argument('--checkpoint_frequency', type=int, default=5,
                       help='Frequency (in epochs) to save model checkpoints.')
