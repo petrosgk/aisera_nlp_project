@@ -46,7 +46,7 @@ the question through the entire processing stack to make its final decision.
 ### Results
 
 We split the dataset into train and validation sets. Validation set is a withheld 10% of the dataset.
-We train the model for 100 epochs and we validate every epoch. Our performance evaluation metric
+We train the model for 50 epochs, and we validate every epoch. Our performance evaluation metric
 is the accuracy with which the model can predict the start a<sub>s</sub> and end a<sub>d</sub> tokens
 of the answer span in the context, relative to all the context tokens.
 
