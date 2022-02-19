@@ -15,7 +15,7 @@ pip install tensorflow scikit-learn numpy
 You can train a model with the default parameters as follows: 
 
 ```shell
-python train.py --path_to_dataset "D:/projects/aisera/datasets/SQUAD/dev-v1.1.json" --outputs_dir "D:/trainings/aisera"
+python train.py --path_to_dataset "datasets/SQUAD/dev-v1.1.json" --outputs_dir "D:/trainings/aisera"
 ```
 
 For more options and their explanations check ``train.py``.
