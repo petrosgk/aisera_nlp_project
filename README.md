@@ -40,7 +40,8 @@ where the answer is in the context paragraph P.
 
 Using shared weights between context and question embedding layers, as well as between
 encoder layers, we allow the model to incorporate information from both the context and
-the question through the entire processing stack to make its final decision.
+the question through the entire processing stack to make its final decision. With the default
+training setting the model has ~2M parameters.
 
 ### Results
 

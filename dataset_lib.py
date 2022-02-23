@@ -81,26 +81,25 @@ class SQUAD:
           question_words = nltk.word_tokenize(question)  # Split question in word tokens
           if len(question_words) > self.max_question_length:
             continue
-          # Take only the first answer
-          answer = qas_entry['answers'][0]
-          # Start of answer as the index of a character token in the context
-          answer_start = answer['answer_start']
-          # Find answer end character token
-          answer_end = answer_start + len(answer['text']) - 1
-          # From the character level indices, we find the context word token indices that correspond to the answer
-          try:
-            first_idx, last_idx = self.find_answer_start_end_in_context(context, context_words, answer_start, answer_end)
-          except ValueError:
-            continue
           inputs = (
             self.text_vectorization_layer(process_string(context)),
             self.text_vectorization_layer(process_string(question))
           )
-          outputs = (
-            np.asarray([first_idx], dtype='int64'),
-            np.asarray([last_idx], dtype='int64')
-          )
-          tuples_dataset.append((inputs, outputs))
+          for answer in qas_entry['answers']:
+            # Start of answer as the index of a character token in the context
+            answer_start = answer['answer_start']
+            # Find answer end character token
+            answer_end = answer_start + len(answer['text']) - 1
+            # From the character level indices, we find the context word token indices that correspond to the answer
+            try:
+              first_idx, last_idx = self.find_answer_start_end_in_context(context, context_words, answer_start, answer_end)
+            except ValueError:
+              continue
+            outputs = (
+              np.asarray([first_idx], dtype='int64'),
+              np.asarray([last_idx], dtype='int64')
+            )
+            tuples_dataset.append((inputs, outputs))
     return tuples_dataset
 
   def __call__(self):

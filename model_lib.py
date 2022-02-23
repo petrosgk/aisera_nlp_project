@@ -27,9 +27,10 @@ class Model:
       name='encoder_rnn_0'
     )
     self.rnn_1 = tf.keras.layers.Bidirectional(
-      tf.keras.layers.LSTM(units=self.encoder_dim),
+      tf.keras.layers.LSTM(units=self.encoder_dim, return_sequences=True),
       name='encoder_rnn_1'
     )
+    self.pool = tf.keras.layers.GlobalAveragePooling1D(name='pool')
 
   def extract_features(self, inputs):
     x = self.embedding(inputs)
@@ -37,6 +38,8 @@ class Model:
     x = self.rnn_0(x)
     # shape: (batch_size, sequence_length, 2 * encoder_dim)
     x = self.rnn_1(x)
+    # shape: (batch_size, sequence_length, 2 * encoder_dim)
+    x = self.pool(x)
     # shape: (batch_size, 2 * encoder_dim)
     return x
 
