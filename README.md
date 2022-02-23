@@ -1,13 +1,12 @@
 # Question Answering NLP Project
 
 This project was done as part of AISERA's NLP coding exercise. 
-I coded from scratch a deep-learning based NLP model for Question Answering and trained it on the SQUAD
-dev dataset.
+I coded from scratch a deep-learning based NLP model for Question Answering and trained it on the SQUAD dataset.
 
 ### Requirements
 
 ```shell
-pip install tensorflow scikit-learn numpy
+pip install tensorflow numpy nltk
 ```
 
 ### Train
@@ -15,7 +14,7 @@ pip install tensorflow scikit-learn numpy
 You can train a model with the default parameters as follows: 
 
 ```shell
-python train.py --path_to_dataset "datasets/SQUAD/dev-v1.1.json" --outputs_dir "D:/trainings/aisera"
+python train.py --path_to_train_dataset "datasets/SQUAD/train-v1.1.json" --path_to_test_dataset "datasets/SQUAD/dev-v1.1.json" --outputs_dir "D:/trainings/aisera"
 ```
 
 For more options and their explanations check ``train.py``.
@@ -45,15 +44,14 @@ the question through the entire processing stack to make its final decision.
 
 ### Results
 
-We split the dataset into train and validation sets. Validation set is a withheld 10% of the dataset.
+We use the train set for training and the dev set for validation.
 We train the model for 50 epochs, and we validate every epoch. Our performance evaluation metric
 is the accuracy with which the model can predict the start a<sub>s</sub> and end a<sub>d</sub> tokens
 of the answer span in the context, relative to all the context tokens.
 
-The model reaches around 80% accuracy for predicting the start token and a similar accuracy for
-predicting the end token. However, we observed significant overfitting to the training set, despite efforts
+The model reaches around 82% accuracy for predicting the start token and a similar accuracy for
+predicting the end token. However, we did observe some overfitting to the training set, despite efforts
 to mitigate it, such as reducing the learning rate and trying dropout and regularization.
-This might be because only the small SQUAD dev dataset was used for this model, with a train/validation split.
 
 ![start_index_acc](start_index_acc.png)
 

@@ -6,11 +6,13 @@ class Model:
                vocabulary_size,
                embedding_dim,
                encoder_dim,
+               features_dim,
                max_context_length,
                vectorization_layer=None):
     self.vocabulary_size = vocabulary_size
     self.embedding_dim = embedding_dim
     self.encoder_dim = encoder_dim
+    self.features_dim = features_dim
     self.max_context_length = max_context_length
     self.vectorization_layer = vectorization_layer
 
@@ -19,38 +21,39 @@ class Model:
                                                output_dim=self.embedding_dim,
                                                mask_zero=True,
                                                name='embedding')
-
     # Shared encoder layers
     self.rnn_0 = tf.keras.layers.Bidirectional(
-      tf.keras.layers.LSTM(units=self.encoder_dim,
-                           return_sequences=True,
-                           return_state=True),
+      tf.keras.layers.LSTM(units=self.encoder_dim, return_sequences=True, return_state=True),
       name='encoder_rnn_0'
     )
     self.rnn_1 = tf.keras.layers.Bidirectional(
-      tf.keras.layers.LSTM(units=self.encoder_dim,
-                           return_sequences=True),
+      tf.keras.layers.LSTM(units=self.encoder_dim),
       name='encoder_rnn_1'
     )
 
-  def extract_features(self, inputs, name):
+  def extract_features(self, inputs):
     x = self.embedding(inputs)
     # shape: (batch_size, sequence_length, embedding_dim)
     x = self.rnn_0(x)
     # shape: (batch_size, sequence_length, 2 * encoder_dim)
     x = self.rnn_1(x)
-    # shape: (batch_size, sequence_length, 2 * encoder_dim)
-    x = tf.keras.layers.GlobalAveragePooling1D(name=name + '_pool')(x)
     # shape: (batch_size, 2 * encoder_dim)
     return x
 
-  def process(self, context, question):
-    context_features = self.extract_features(context, name='context_features')
-    # shape: (batch_size, 2 * encoder_dim)
-    question_features = self.extract_features(question, name='question_features')
-    # shape: (batch_size, 2 * encoder_dim)
-    features = tf.keras.layers.Concatenate(axis=-1, name='concat')([context_features, question_features])
+  def merge_features(self, context_features, question_features):
+    x = tf.keras.layers.Concatenate(axis=-1, name='concat')([context_features, question_features])
     # shape: (batch_size, 4 * encoder_dim)
+    x = tf.keras.layers.Dense(units=self.features_dim, activation='tanh', name='features')(x)
+    # shape: (batch_size, features_dim)
+    return x
+
+  def process(self, context, question):
+    context_features = self.extract_features(context)
+    # shape: (batch_size, 2 * encoder_dim)
+    question_features = self.extract_features(question)
+    # shape: (batch_size, 2 * encoder_dim)
+    features = self.merge_features(context_features, question_features)
+    # shape: (batch_size, features_dim)
     start_index = tf.keras.layers.Dense(units=self.max_context_length, activation='softmax', name='start_index')(features)
     # shape: (batch_size, max_context_length)
     end_index = tf.keras.layers.Dense(units=self.max_context_length, activation='softmax', name='end_index')(features)

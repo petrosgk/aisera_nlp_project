@@ -63,34 +63,37 @@ class ModelCheckpoint(tf.keras.callbacks.Callback):
       self.inference_model.save(checkpoint_path)
 
 
-def train(path_to_dataset,
+def train(path_to_train_dataset,
+          path_to_test_dataset,
           outputs_dir,
-          test_size,
-          random_state,
           max_question_length,
           max_context_length,
           vocabulary_size,
           embedding_dim,
           encoder_dim,
+          features_dim,
           learning_rate,
           batch_size,
           max_epochs,
           checkpoint_frequency):
-  # Create training and test sets
+  # Initialize SQUAD dataset processor
   print('Creating train and test sets...')
-  squad_dataset = dataset_lib.SQUAD(path_to_json=path_to_dataset,
-                                    test_size=test_size,
+  squad_dataset = dataset_lib.SQUAD(path_to_train_json=path_to_train_dataset,
+                                    path_to_dev_json=path_to_test_dataset,
                                     vocabulary_size=vocabulary_size,
                                     max_question_length=max_question_length,
-                                    max_context_length=max_context_length,
-                                    random_state=random_state)
+                                    max_context_length=max_context_length)
+  # Create train and test sets
   train_set, test_set = squad_dataset()
+  # Save vocabulary to file
+  squad_dataset.save_vocabulary(os.path.join(outputs_dir, 'squad.vocabulary.txt'))
   # Create model used for training/validation
   print('Creating model...')
   model = model_lib.Model(vocabulary_size=vocabulary_size,
                           max_context_length=max_context_length,
                           embedding_dim=embedding_dim,
                           encoder_dim=encoder_dim,
+                          features_dim=features_dim,
                           vectorization_layer=squad_dataset.text_vectorization_layer)
   train_model = model.create_model()
   train_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=learning_rate),
@@ -112,5 +115,4 @@ def train(path_to_dataset,
                   validation_data=test_data_sequence,
                   epochs=max_epochs,
                   callbacks=callbacks,
-                  shuffle=False,
                   verbose=1)
