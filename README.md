@@ -24,7 +24,7 @@ For more options and their explanations check ``train.py``.
 You can supply a model checkpoint, a context paragraph as a .txt file, and a question whose answer appears in the context:
 
 ```shell
-python infer.py --checkpoint "checkpoints/epoch_54.loss_1.8427.val_loss_13.9464" --context_txt "example/context.txt" --question "The majority of building construction jobs are what?"
+python infer.py --checkpoint "checkpoints/epoch_49.loss_1.3365.val_loss_16.8641" --context_txt "example/context.txt" --question "The majority of building construction jobs are what?"
 ```
 
 ### Architecture
@@ -54,23 +54,23 @@ The model reaches around 82% accuracy for predicting the start token and a simil
 predicting the end token. However, we did observe some overfitting to the training set, despite efforts
 to mitigate it, such as reducing the learning rate and trying dropout and regularization.
 
-![start_index_acc](start_index_acc.png)
+![start_index_acc](index_acc.jpg)
 
 When using the model for inference, with the example command provided above, the
 input context and question and the output answer are as follows:
 
 Context:
 ```text
-Building construction is the process of adding structure to real property or construction of buildings. The majority of building construction jobs are small renovations, such as addition of a room, or renovation of a bathroom. Often, the owner of the property acts as laborer, paymaster, and design team for the entire project. Although building construction projects typically include various common elements, such as design, financial, estimating and legal considerations, many projects of varying sizes reach undesirable end results, such as structural collapse, cost overruns, and/or litigation. For this reason, those with experience in the field make detailed plans and maintain careful oversight during the project to ensure a positive outcome.
+It is commonly believed that the earlier a defect is found, the cheaper it is to fix it. The following table shows the cost of fixing the defect depending on the stage it was found. For example, if a problem in the requirements is found only post-release, then it would cost 10\u2013100 times more to fix than if it had already been found by the requirements review. With the advent of modern continuous deployment practices and cloud-based services, the cost of re-deployment and maintenance may lessen over time.
 ```
 
 Question:
 ```text
-The majority of building construction jobs are what?
+What determines the cost of fixing a bug?
 ```
 
 Answer:
 
 ```text
-small renovations
+the earlier a defect is found
 ```
