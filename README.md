@@ -6,7 +6,7 @@ I coded from scratch a deep-learning based NLP model for Question Answering and 
 ### Requirements
 
 ```shell
-pip install tensorflow numpy nltk
+pip install tensorflow numpy nltk tqdm
 ```
 
 ### Train
